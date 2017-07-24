@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<config>
+		<!-- Configuration spécifique pour le formulaire -->
+		<display_path>student/movies/get</display_path>
+		<!--<save_path>student/movies/save</save_path>-->
+		<!--<delete_path>group/list/delete</delete_path>-->
+		<!--<getdataset_path>selectmovies/movies/getdataset</getdataset_path>-->
+		<frame_js_class_name>FrameFormStudentMovies</frame_js_class_name>
+	</config>
+	
+	<!-- Définition des sources données -->
+	<data_structure>		
+		<dataquery id="movie" table_name="{pj}_grp_movie_data" varset_name="group_movie" table_alias="gm">
+			<column_simple field_name="id_data" table_name="m" />
+			<column_simple field_name="label" table_name="m" />
+			<column_simple field_name="sub_label" table_name="m" />
+			<column_simple field_name="description" table_name="m" />
+			<column_simple field_name="level" table_name="m" />
+			<column_simple field_name="movie_type" table_name="m" />	
+			<column_simple field_name="tags" table_name="m" />	
+			<column_simple field_name="difficulty" table_name="m" />	
+<!--			<column sql="if( {p.id_data} IS NOT NULL, 1, 0)" alias="played" type="boolean">
+				<field table_name="p" field_name="id_data" alias="p.id_data"/>
+			</column>-->
+			<!--<column_simple field_name="favorite" table_name="p" />-->
+
+			<column sql="(SELECT IF( `id_data` IS NOT NULL, 1, 0) FROM `lmds_played_movie_data` WHERE `id_movie`=m.`id_data` AND `id_owner`={id_user})" alias="played" type="boolean" >
+				<variable alias="id_user" default="0">
+					<entry type="user" name="user_id" />
+				</variable>
+			</column>
+			<column sql="(SELECT `favorite` FROM `lmds_played_movie_data` WHERE `id_movie`=m.`id_data` AND `id_owner`={id_user})" alias="favorite" type="boolean" >
+				<variable alias="id_user" default="0">
+					<entry type="user" name="user_id" />
+				</variable>
+			</column>
+			
+			<join detail_table="{pj}_movie_data" detail_alias="m" sql="{gm.id_movie}={m.id_data}" detail_varset_name="movie">
+				<field table_name="gm" field_name="id_movie" alias="gm.id_movie"/>
+				<field table_name="m" field_name="id_data" alias="m.id_data"/>
+			</join>
+			
+<!--			<join detail_table="{pj}_played_movie_data" detail_alias="p" detail_varset_name="played_movie"
+				  sql="{m.id_data}={p.id_movie} AND {p.id_owner}={id_user}">
+				<field table_name="p" field_name="id_movie" alias="p.id_movie"/>
+				<field table_name="p" field_name="id_owner" alias="p.id_owner"/>
+				<field table_name="m" field_name="id_data" alias="m.id_data"/>
+				<variable alias="id_user" default="0">
+					<entry type="user" name="user_id" />
+				</variable>
+			</join>-->
+			
+			<join detail_table="{pj}_user_data" detail_alias="u" sql="{m.teacher}={u.id_data}" 
+				  type="left">
+				<field table_name="m" field_name="teacher" alias="m.teacher"/>
+				<field table_name="u" field_name="id_data" alias="u.id_data"/>
+			</join>
+			
+			<column sql="concat_ws(' ', {firstname}, {lastname})" alias="teacher" type="string">
+				<field table_name="u" field_name="firstname" alias="firstname"/>
+				<field table_name="u" field_name="lastname" alias="lastname"/>
+			</column>
+			
+			<!-- Retrieve movie grid pdf -->
+			<join detail_table="{pj}_movie_pdf_file_data" detail_alias="p" sql="{m.id_data}={p.id_movie}" detail_varset_name="movie_pdf_file" type="left">
+				<field table_name="m" field_name="id_data" alias="m.id_data"/>
+				<field table_name="p" field_name="id_movie" alias="p.id_movie"/>
+			</join>
+			
+			<column sql="{id_file}" alias="id_pdf_file" type="integer">
+				<field table_name="p" field_name="id_file" alias="id_file"/>
+			</column>
+			
+			<!-- important if student is in two groups with common movies -->
+			<group_by sql="{m.id_data}">
+				<field table_name="m" field_name="id_data" alias="m.id_data"/>
+			</group_by>
+			
+			<order_by sql="{m.level}">
+				<field table_name="m" field_name="level" alias="m.level"/>
+			</order_by>
+			<!--order_by sql="{m.difficulty}">
+				<field table_name="m" field_name="difficulty" alias="m.difficulty"/>
+			</order_by-->
+			<order_by sql="{m.teacher}">
+				<field table_name="m" field_name="teacher" alias="m.teacher"/>
+			</order_by>
+			<order_by sql="{m.position}">
+				<field table_name="m" field_name="position" alias="m.position"/>
+			</order_by>
+		</dataquery>
+	</data_structure>
+	<!-- Mise en page -->
+	<layout disabled="false">
+		<custom id="videoPlayer-dialog">
+			<option output="html" option_name="widget" value="WidgetVideoPlayerDialog"/>
+			<custom id="videoPlayer">
+				<option output="html" option_name="widget" value="WidgetVideoPlayer"/>
+			</custom>
+		</custom>
+		<box class="col-md-offset-1 col-md-10">
+			<form_row>
+				<statictext id="identity" class="h4-like text-right"></statictext>
+				<statictext id="hello"></statictext>
+			</form_row>
+			<form_row>
+				<statictext>Filtres: </statictext>
+				<button id="favorite-btn" class="btn-xs" action="list:favoriteFilter" label="Favoris" >
+					<option output="html" option_name="glyphicon" value="glyphicon-star" />
+				</button>
+				<button id="unplayed-btn" class="btn-xs" action="list:unplayedFilter" label="Non lues" >
+					<option output="html" option_name="glyphicon" value="glyphicon glyphicon-exclamation-sign" />
+				</button>
+			</form_row>
+			<form_row>
+				<custom id="movieList" dataset="movie" class="col-xs-12">
+					<option output="html" option_name="widget" value="WidgetMovies"/>
+				</custom>
+			</form_row>
+			<box class="text-right">
+				<link href="auth/index/disconnect" method="window" class="btn btn-danger btn-sm">Déconnexion</link>
+			</box>
+		</box>
+	</layout>
+</form>

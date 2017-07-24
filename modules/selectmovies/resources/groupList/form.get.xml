@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<config>
+		<!-- Configuration spécifique pour le formulaire -->
+		<display_path>select-movies/group-list/get</display_path>
+		<!--<save_path>module/controller/action</save_path>-->
+		<!--<delete_path>group/list/delete</delete_path>-->
+		<getdataset_path>select-movies/group-list/getdataset</getdataset_path>
+		<!--<frame_js_class_name>FrameClassName</frame_js_class_name>-->
+	</config>
+	
+	<!-- Définition des sources données -->
+	<data_structure>
+		
+		<!-- Dataquery -->
+		<dataquery id="group" table_name="{pj}_grp_data" varset_name="group" table_alias="g">
+			<column_simple field_name="id_data" table_name="g" />
+			<column_simple field_name="label" table_name="g" />		
+			<condition sql="{g.teacher}={param.teacher}" optional="true">
+				<field field_name="teacher" table_name="g" alias="g.teacher" />
+				<variable alias="param.teacher" default="NULL">
+					<entry type="param" name="teacher" />
+				</variable>
+			</condition>
+			<condition sql="{g.disabled} is null or {g.disabled}=34" >
+				<field field_name="disabled" table_name="g" alias="g.disabled" />
+			</condition>	
+		</dataquery>
+
+	</data_structure>
+
+	<!-- Mise en page -->
+	<layout disabled="false">
+		<box class="col-md-offset-2 col-md-8">
+			<statictext class="h4-like ">Select group</statictext>
+		</box>			
+		<custom dataset="group" class="col-md-offset-2 col-md-8">
+			<option output="html" option_name="widget" value="WidgetSelectionList"/>
+			<option output="html" option_name="uri" value="selectmovies/movies/get/id_group/{id_data}"/>
+		</custom>
+		<box class="col-md-offset-2 col-md-8">
+			<form_row>
+				<box class="col-xs-6">
+					<button id="back" action="exit" label="Back">
+						<redirection module="selectmovies" ctrl="teacher-list" action="get" />
+					</button>
+					<link id="disconnect" href="auth/index/disconnect" method="window" class="btn btn-danger btn-sm">Disconnect</link>
+				</box>
+			</form_row>
+		</box>
+	</layout>
+</form>

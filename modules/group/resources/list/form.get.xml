@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<config>
+		<!-- Configuration spécifique pour le formulaire -->
+		<display_path>group/list/get</display_path>
+		<!--<save_path>module/controller/action</save_path>-->
+		<delete_path>group/list/delete</delete_path>
+		<getdataset_path>group/list/getdataset</getdataset_path>
+		<!--<frame_js_class_name>FrameClassName</frame_js_class_name>-->
+	</config>
+	
+	<!-- Définition des sources données -->
+	<data_structure>
+
+		<dataset id="filter" type="filter" mute_refresh_event="true">
+			<metadata>
+				<fields>					
+					<field id="label" type="string" default_label="Nom"/>
+					<field id="disabled" type="fkey_sysdico" default_label="Groupe désactivé ?">
+						<fkey_sysdico dico_name="yorn"/>
+					</field>					
+				</fields>
+			</metadata>
+		</dataset>
+		
+		<!-- Dataquery -->
+		<dataquery id="group" table_name="{pj}_grp_data" varset_name="group" table_alias="g" begin="0" range="10">
+			<column_simple field_name="id_data" table_name="g" />
+			<column_simple field_name="label" table_name="g" />
+			<column_simple field_name="level" table_name="g" />
+			<column_simple field_name="teacher" table_name="g" />
+			<column_simple field_name="disabled" table_name="g" />
+			<column sql="concat_ws(' ', {firstname}, {lastname})" alias="identity" type="string">
+				<field table_name="u" field_name="firstname" alias="firstname"/>
+				<field table_name="u" field_name="lastname" alias="lastname"/>
+			</column>
+			<join detail_table="{pj}_user_data" detail_alias="u" sql="{g.teacher}={u.id_data}" detail_varset_name="user">
+				<field table_name="u" field_name="id_data" alias="u.id_data"/>
+				<field table_name="g" field_name="teacher" alias="g.teacher"/>
+			</join>
+			<condition sql="{disabled}={f.disabled}" optional="true">
+				<field table_name="g" field_name="disabled" alias="disabled"/>
+				<variable alias="f.disabled" default="NULL">
+					<entry type="param" name="disabled" />
+					<entry type="dataset" name="filter" field="disabled" row="current" />
+				</variable>
+			</condition>
+			<condition sql="{label} LIKE '%{f.label}%'" optional="true">
+				<field table_name="g" field_name="label" alias="label"/>
+				<variable alias="f.label" default="NULL">
+					<entry type="param" name="label" />
+					<entry type="dataset" name="filter" field="label" row="current" />
+				</variable>
+			</condition>
+		</dataquery>
+	</data_structure>
+
+	<!-- Mise en page -->
+	<layout disabled="false">
+		<box class="col-md-offset-2 col-md-8">
+			<statictext class="h4-like ">Group list</statictext>
+			<group>
+				<form_row>
+					<label dataset="filter" field="disabled" class="col-sm-4" />
+					<value dataset="filter" field="disabled" mode="rw" class="col-sm-8" >
+						<option output="html" option_name="inline" value="true" />
+					</value>
+				</form_row>				
+				<box class="col-xs-12 text-right">
+					<button action="refresh_dataset" label="Rechercher..." dataset="group" class="btn-primary text-right">
+						<option output="html" option_name="glyphicon" value="glyphicon-search" />
+					</button>
+				</box>	
+			</group>
+			<table dataset="group">
+				<options>
+						<option output="html" option_name="edit_url" value="group/edit/get/id_data/{id_data}"/>
+						<option output="html" option_name="enable_deletion" value="true"/>
+				</options>
+				<columns>
+						<column field="label" title="Label"/>
+						<column field="level" title="Level"/>
+						<column field="identity" title="Teacher"/>
+						<column field="disabled" title="Désactivé?"/>
+				</columns>
+			</table>
+			<paginator dataset="group"/>
+			<form_row>
+				<box class="col-xs-6">
+					<button action="exit" label="Exit"/>
+				</box>
+				<box class="col-xs-6 text-right">
+					<button action="exit" label="Add" class="btn-primary">
+						<redirection module="group" ctrl="edit" action="get" />
+					</button>
+				</box>
+			</form_row>
+		</box>
+	</layout>
+</form>

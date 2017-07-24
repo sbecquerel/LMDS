@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<config>
+		<!-- Configuration spécifique pour le formulaire -->
+		<display_path>movie/import/get</display_path>
+		<save_path>movie/import/save</save_path>
+		<!--<delete_path>group/list/delete</delete_path>-->
+		<getdataset_path>movie/import/getdataset</getdataset_path>
+		<frame_js_class_name>FrameFormImportMovies</frame_js_class_name>
+	</config>
+	
+	<!-- Définition des sources données -->
+	<data_structure>		
+		<dataset id="movie">
+			<metadata>
+				<fields>
+					<field id="id_data" type="primary_key" default_label="Id" default_short_label="Id"/>
+					<field id="import" type="boolean" default_label="Import" default_short_label="Import"/>
+					<field id="filename" type="string" default_label="File name" default_short_label="File name">
+						<string length="255"/>
+					</field>
+					<field id="path" type="string" default_label="Path" default_short_label="Path">
+						<string length="255"/>
+					</field>
+					<field id="label" type="string" default_label="Titre" default_short_label="Titre">
+						<string length="255"/>
+					</field>
+					<field id="teacher" type="integer" default_label="Teacher" default_short_label="Teacher"/>
+					<field id="level" type="fkey_dico" default_label="Level" default_short_label="Level">
+						<fkey_dico dico_name="level"/>
+					</field>
+					<field id="movie_type" type="fkey_dico" default_label="Type" default_short_label="Type">
+						<fkey_dico dico_name="movie_type"/>
+					</field>
+					<field id="description" type="string" default_label="Description" default_short_label="Description">
+						<string length="255"/>
+					</field>
+					<field id="tags" type="string" default_label="Tags" default_short_label="Tags">
+						<string length="255"/>
+					</field>
+					<field id="difficulty" type="integer" default_label="Difficulté" default_short_label="Difficulté"/>
+					<field id="position" type="integer" default_label="Position" default_short_label="Position"/>
+					<field id="sub_label" type="string" default_label="Sous-titre" default_short_label="Sous-titre">
+						<string length="255"/>
+					</field>
+				</fields>
+			</metadata>
+			<rowdata/>
+		</dataset>
+		<dataquery id="search_tag" table_name="{pj}_movie_data" varset_name="movie" table_alias="m">
+			<!-- Search condition -->
+			<match sql="{m.tags} LIKE '%{search_string}%'" optional="true">
+				<field field_name="tags" table_name="m" alias="m.tags"/>
+				<variable alias="search_string" default="NULL" type="search">
+					<entry type="param" name="search_string"/>
+				</variable>
+			</match>
+
+			<!-- Search result to show -->
+			<column sql="{m.tags}" alias="body" type="string" length="150">
+				<field table_name="m" field_name="tags" alias="m.tags"/>
+			</column>
+		</dataquery>
+		<dataquery id="search_tag" table_name="{pj}_int_data" varset_name="intervention" table_alias="m">
+				<!-- Search condition -->
+				<match sql="{m.tags} LIKE '%{search_string}%'" optional="true">
+						<field field_name="tags" table_name="m" alias="m.tags"/>
+						<variable alias="search_string" default="NULL" type="search">
+										<entry type="param" name="search_string"/>
+						</variable>
+				</match>
+
+				<!-- Search result to show -->
+				<column sql="{m.tags}" alias="body" type="string" length="150">
+						<field table_name="m" field_name="tags" alias="m.tags"/>
+				</column>
+		</dataquery>
+		<dataquery id="teachers" table_name="{pj}_user_data" varset_name="user" table_alias="u">
+			<column_simple field_name="id_data" table_name="u" />
+			<!-- Used by robot import -->
+			<column_simple field_name="firstname" table_name="u" />
+			<!-- Search result to show -->
+			<column sql="concat_ws(' ', {u.firstname}, {u.lastname})" alias="label" type="string" length="150">
+				<field table_name="u" field_name="firstname" alias="u.firstname"/>
+				<field table_name="u" field_name="lastname" alias="u.lastname"/>
+			</column>
+			<!-- Get only teachers @depends event _getdataset_afterExecute in ctrl -->
+			<join detail_table="{pj}_pj_group_link" detail_alias="l" sql="{u.id_group}={l.id_group}">
+				<field table_name="u" field_name="id_group" alias="u.id_group"/>
+				<field table_name="l" field_name="id_group" alias="l.id_group"/>
+			</join>
+		</dataquery>
+	</data_structure>
+	<!-- Mise en page -->
+	<layout disabled="false">
+		<box class="col-md-offset-2 col-md-8">
+			<statictext class="h4-like ">Movie import</statictext>
+			<group>
+				<form_row>
+					<label dataset="movie" field="import" />
+					<value dataset="movie" field="import" mode="rw" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="path" />
+					<value dataset="movie" field="path" mode="ro" class="col-md-9 col-lg-10" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="label" />
+					<value dataset="movie" field="label" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="sub_label" />
+					<value dataset="movie" field="sub_label" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="description" />
+					<value dataset="movie" field="description" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="teacher" />
+					<value dataset="movie" field="teacher" mode="rw" class="col-md-9 col-lg-10" >
+						<option output="html" option_name="widget" value="WidgetSelect" />
+						<option output="html" option_name="dataset" value="teachers" />
+					</value>
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="level"/>
+					<value dataset="movie" field="level" mode="rw" class="col-md-9 col-lg-10" >
+						<option output="html" option_name="widget" value="WidgetSelect"/>
+					</value>
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="movie_type" />
+					<value dataset="movie" field="movie_type" mode="rw" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="tags" />
+					<tag dataset="movie" field="tags" class="col-md-9 col-lg-10" >
+						<option output="html" option_name="search_param" value="search_string"/>
+						<option output="html" option_name="search_dataset" value="search_tag"/>
+					</tag>
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="difficulty" />
+					<value dataset="movie" field="difficulty" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="position" />
+					<value dataset="movie" field="position" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+			</group>
+			<form_row>
+				<box class="col-xs-6">
+					<button action="exit" label="Back">
+						<redirection module="movie" ctrl="list" action="get" />
+					</button>
+				</box>
+				<box class="col-xs-6 text-right">
+					<button action="save" label="Import" class="btn-primary">
+						<redirection module="movie" ctrl="import" action="get" />
+					</button>
+				</box>
+			</form_row>			
+			<listing dataset="movie" mode="ro">
+				<columns>
+					<column field="import" mode="ro" title="Import" />
+					<column field="path" mode="ro" title="Fichier" />
+				</columns>
+			</listing>
+		</box>
+	</layout>
+</form>

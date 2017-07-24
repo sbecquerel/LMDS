@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modules>
+	
+	<!-- Widgets -->
+	<module name="widgetselectionlist" path="frame/layout/widget/widgetselectionlist.js">
+		<require>base</require>
+	</module>
+	<module name="widgetselectmovies" path="frame/layout/widget/widgetselectmovies.js">
+		<require>base</require>
+	</module>
+	<module name="widgetmovies" path="frame/layout/widget/widgetmovies.js">
+		<require>base</require>
+	</module>
+	<module name="widgetinfomovies" path="frame/layout/widget/widgetinfomovies.js">
+		<require>base</require>
+	</module>
+	<module name="widgetvideoplayer" path="frame/layout/widget/widgetvideoplayer.js">
+		<require>base</require>
+	</module>
+	<module name="widgetvideoplayerhtml5" path="frame/layout/widget/widgetvideoplayerhtml5.js">
+		<require>base</require>
+	</module>
+	<module name="widgetvideoplayerdialog" path="frame/layout/widget/widgetvideoplayerdialog.js">
+		<require>widgetgroupdialog</require>
+	</module>
+	<module name="frameformselectmovies" path="frame/frameformselectmovies.js">
+		<require>frameform</require>
+	</module>
+	<module name="frameformimportmovies" path="frame/frameformimportmovies.js">
+		<require>frameform</require>
+	</module>
+	<module name="frameformstudentmovies" path="frame/frameformstudentmovies.js">
+		<require>frameform</require>
+	</module>
+	<module name="widgetchart" path="frame/layout/widget/widgetchart.js">
+		<require>widgetbase</require>
+		<require>charts</require>
+	</module>
+</modules>

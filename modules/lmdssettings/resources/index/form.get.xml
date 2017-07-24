@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<data_structure />
+	<layout>
+		<box class="col-md-offset-2 col-md-8">
+			<statictext class="h4-like">Settings</statictext>
+			<box class="list-group">
+				<link href="group/list/get" class="list-group-item">Groups</link>
+				<link href="movie/list/get" class="list-group-item">Movies</link>			
+				<link href="project/user/getusers" class="list-group-item">Users</link>
+			</box>
+			<box class="list-group">
+				<link href="project/group/getgroups" class="list-group-item">Vzn Groups</link>
+				<link href="project/role/getroles" class="list-group-item">Roles</link>				
+			</box>
+			<box class="list-group">
+				<link href="dico/list/index" class="list-group-item">Dictionnaries</link>
+				<link href="resource/list/index" class="list-group-item">Resources</link>
+			</box>
+			<box>
+				<button action="exit" label="Back"/>
+			</box>
+		</box>
+	</layout>
+</form>

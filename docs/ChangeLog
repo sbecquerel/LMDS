@@ -1,0 +1,117 @@
+2015-08-30 Sébastien Becquerel <s.becquerel@gmail.com>	
+	- Ajout de la possibilité de désactiver un groupe.
+	  Mettre à our le varset group:
+		<var uid="7" id="disabled" type="fkey_sysdico" mandatory="false" default_label="Désactiver le groupe ?" default_value="34">
+			<fkey_sysdico dico_name="yorn"/>
+		</var>
+	  Et recoder tous les records existants à "no" (id_data = 34).
+	  UPDATE lmds_grp_data SET disabled=34;
+
+2015-08-29 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Ajout d'une icône pour télécharger le PDF + création d'un action dans le 
+      controller movies pour envoyer le PDF (get-pdf).
+
+2015-07-13 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Possibilité de lier un PDF à une vidéo, représentant la grille.
+	  Création d'un varset dédié, "Movie - PDF File", lié au varset "Movie" (cf resources/xml/movie_pdf_file.xml).
+	  Mettre à jour les droits: droit all sur le nouveau varset.
+	  Eléments impactés:
+		- movie/edit : ajout de l'upload de PDF.
+			- Débug du widget upload losrqu'on en utilise plus d'un sur le même formulaire (collision d'ID).
+			  Mettre à jour le noyau Voo4.
+		- movie/list : suppression du PDF en même temps que la vidéo.
+		- movie/import : rendre possible l'import du PDF en même temps que la vidéo ?
+		- student/movies : dans le XML de formulaire récupérer l'identifiant du PDF.
+			- Pour le moment pas de PDF avec les vidéos de type info (ces vidéos
+			  sont insérées dans le dataset à posteriori dans le controller).
+		- selectmovies/movies : pas d'affichage des PDF.
+	  Nb: mise à jour de la feuille de style.
+
+2015-06-21 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Ajout du champ prof dans le varset user
+			<var uid="14" id="staff" type="boolean" mandatory="false" default_label="Is prof?"/>
+
+2015-06-20 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Créer le dictionniare date_format avec les entrées suivantes:
+		- Week/Year %V/%Y
+		- Month/Year %m/%Y
+		- Day/Month/Year %d/%m/%Y
+
+2015-06-08 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Varset played movie, ajouter la variable de type date "marked_date".
+
+2015-04-07 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Ajout de la fonction repeat sur les champs du formulaire d'import
+
+2015-03-31 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Ajout des vidéos de type FAQ (onglet FAQ sur la page d'accueil).
+	  Modifier le dictionnaire movie_type:
+		Recoder "Accueil" en "Info"
+		Ajouter l'entrée id_data=45, label="FAQ", code=4, short_label="faq", position=4
+
+2015-03-29 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Supprimer les espaces dans les libellés du dico group_detailed_level
+	- Ajouter les nouveaux champs dans le varset vidéo
+	<var uid="10" id="difficulty" type="integer" mandatory="false" default_label="Difficulté" default_short_label="Difficulté" />
+	<var uid="11" id="position" type="integer" mandatory="false" default_label="Position" default_short_label="Position" />
+	<var uid="12" id="sub_label" type="string" mandatory="false" default_label="Sous-titre">
+		<string length="255"/>
+	</var>
+	Au passage, renommer Label en Titre pour la variable label.
+
+2015-03-28 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Changer le libellé des entrées du dictionnaire movie_type:
+		Standard : Morceaux
+		Global : Pédago
+		Info : Accueil
+	- Ajout de la notion de vidéo favorite. Créer la variable favorite dans le varset "Played movies"
+		<var uid="2" id="favorite" type="boolean" mandatory="false" default_label="Favorite"/>
+	- Ajout des tags sur le varset video:
+		<var uid="9" id="tags" type="string" mandatory="false" default_label="Tags" default_short_label="Tags">
+			<string length="255"/>
+		</var>
+
+2015-03-22 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Débug noyau, mettre à jour le script Resource/Xml/Query/Manager.php
+
+2015-03-21 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Refactoring de la page d'accueil avec ajout d'un système d'onglet, et affichage
+	des vidéos sur plusieurs colonnes
+	- Ajout de la variable description dans le varset movie, type string 255
+	<var uid="8" id="description" type="string" mandatory="false" default_label="Description">
+		<string length="255"/>
+	</var>
+
+2015-02-15 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Suppression des variables sub_level, et detailed_level
+	- Modification du dictionnaire "branch" sur la variable level du varset group
+	(utilisation de detailed_group_level)
+
+2015-01-26 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Transformation de la variable global du varset movie en dictionnaire. Cela
+	permet d'avoir un 3e type de vidéo, "info", qui sont affichées sur la page d'accueil
+	de tous les élève.
+
+2015-01-25 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Mise en place de l'interface de sélection des vidéos pour un groupe
+	Attention, si le professeur d'un groupe change, les vidéos de ce professeur
+	n'apparaissent plus. Trouver une solution au niveau du dataquery, ou post
+	traitement (attention au tri!).
+
+2015-01-24 Sébastien Becquerel <s.becquerel@gmail.com>
+	- Développement de l'interface de gestion des groupes.
+	- A la création d'un groupe:
+		1- Création d'un groupe Voozanoo avec le libellé comme nom
+		2- Déplacement du professeur sélectionné dans ce groupe, avec le rôle teacher @todo
+		3- Positionnement du record (varset group) dans ce groupe
+	- A la mise à jour d'un groupe:
+		1- Mise à jour du nom d'après le libellé
+		2- Déplacement du professeur (dans le cas où il a changé) @todo
+
+	Pré-requis:
+	1- Le groupe racine (La maison des sons) doit avoir pour identifiant 1, et être
+	dans l'axe avec comme identifiant 1 aussi
+	2- Les professeurs doivent être déclarés dans le groupe racine, avec le rôle
+	teacher.
+	3- Le rôle teacher doit avoir comme identifiant 2.
+	4- Un seul professeur par groupe

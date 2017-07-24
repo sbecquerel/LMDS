@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<config>
+		<!-- Configuration spécifique pour le formulaire -->
+		<display_path>movie/edit/get</display_path>
+		<save_path>movie/edit/save</save_path>
+		<!--<delete_path>movie/controller/action</delete_path>-->
+		<getdataset_path>movie/edit/getdataset</getdataset_path>
+		<!--<frame_js_class_name>FrameClassName</frame_js_class_name>-->
+	</config>
+	
+	<!-- Définition des sources données -->
+	<data_structure>
+
+		<!-- Dataquery -->
+		<dataquery id="movie" table_name="{pj}_movie_data" varset_name="movie" table_alias="m">
+			<column_simple field_name="id_data" table_name="m" />
+			<column_simple field_name="label" table_name="m" />
+			<column_simple field_name="sub_label" table_name="m" />
+			<column_simple field_name="description" table_name="m" />
+			<column_simple field_name="level" table_name="m" />
+			<column_simple field_name="teacher" table_name="m" />
+			<column_simple field_name="movie_type" table_name="m" />
+			<column_simple field_name="tags" table_name="m" />
+			<column_simple field_name="difficulty" table_name="m" />
+			<column_simple field_name="position" table_name="m" />
+			<!-- Permet l'ajout et la modification -->
+			<condition sql="{id_data}={param_id_data}">
+				<field field_name="id_data" table_name="m" alias="id_data" />
+				<variable alias="param_id_data" default="NULL">
+					<entry type="param" name="id_data" />
+				</variable>
+			</condition>
+		</dataquery>
+		<dataquery id="search_tag" table_name="{pj}_movie_data" varset_name="movie" table_alias="m">
+			<!-- Search condition -->
+			<match sql="{m.tags} LIKE '%{search_string}%'" optional="true">
+				<field field_name="tags" table_name="m" alias="m.tags"/>
+				<variable alias="search_string" default="NULL" type="search">
+					<entry type="param" name="search_string"/>
+				</variable>
+			</match>
+
+			<!-- Search result to show -->
+			<column sql="{m.tags}" alias="body" type="string" length="150">
+				<field table_name="m" field_name="tags" alias="m.tags"/>
+			</column>
+		</dataquery>
+		<dataquery id="search" table_name="{pj}_user_data" varset_name="user" table_alias="u">
+
+            <!-- Section 1: search dataquery required fields -->
+            <!-- Search condition -->
+            <match sql="{u.firstname} LIKE '%{search_string}%' OR {u.lastname} LIKE '%{search_string}%'" optional="true">
+        	    <field field_name="firstname" table_name="u" alias="u.firstname"/>
+        	    <field field_name="lastname" table_name="u" alias="u.lastname"/>
+        	    <variable alias="search_string" default="NULL" type="search">
+                    <entry type="param" name="search_string"/>
+        	    </variable>
+    		</match>
+
+            <!-- Search result to show -->
+            <column sql="concat_ws(' ', {u.firstname}, {u.lastname})" alias="body" type="string" length="150">
+            	<field table_name="u" field_name="firstname" alias="u.firstname"/>
+            	<field table_name="u" field_name="lastname" alias="u.lastname"/>
+    		</column>
+
+            <!-- Value for search input field (optional) -->
+            <column sql="concat_ws(' ', {u.firstname}, {u.lastname})" alias="field_value" type="string" >
+            	<field table_name="u" field_name="firstname" alias="u.firstname"/>
+            	<field table_name="u" field_name="lastname" alias="u.lastname"/>
+    		</column>
+
+            <!-- Condition used to set search input field after page load -->
+            <!-- Conditions are removed when match is used -->
+            <condition sql="{u.id_data}={param_id_data}">
+            	<field field_name="id_data" table_name="u" alias="u.id_data"/>
+            	<variable alias="param_id_data" default="NULL">
+					<entry type="dataset" name="movie" field="teacher" row="current" />
+            	</variable>
+    		</condition>
+
+            <!-- Section 2: value(s) to store in target dataset -->
+            <!-- Used to fill id_module variable in intervention dataquery -->
+            <column sql="{u.id_data}" alias="teacher">
+            	<field table_name="u" field_name="id_data" alias="u.id_data"/>
+    		</column>
+			
+			<!-- Get only teachers @depends event _getdataset_afterExecute in ctrl -->
+			<join detail_table="{pj}_pj_group_link" detail_alias="l" sql="{u.id_group}={l.id_group}">
+				<field table_name="u" field_name="id_group" alias="u.id_group"/>
+				<field table_name="l" field_name="id_group" alias="l.id_group"/>
+			</join>
+			
+    	</dataquery>
+		<!-- Dataset movie upload-->
+		<dataquery id="upload" table_name="lmds_movie_file_data" varset_name="movie_file" table_alias="u">
+			<condition sql="{id_movie}={id}">
+				<field field_name="id_movie" table_name="u" alias="id_movie"/>
+				<variable alias="id" default="NULL">
+					<entry type="dataset" name="movie" field="id_data" row="current" />
+					<entry type="param" name="id_data" />
+				</variable>
+			</condition>
+
+			<join detail_table="lmds_file_data" detail_varset_name="file" detail_alias="f" sql="{id_file}={id_data}" type="left">
+				<field table_name="u" field_name="id_file" alias="id_file"/>
+				<field table_name="f" field_name="id_data" alias="id_data"/>
+			</join>
+
+			<column_simple field_name="id_data" table_name="u"/>
+			<column_simple field_name="id_movie" table_name="u"/>
+			<column_simple field_name="id_file" table_name="u"/>
+
+			<column_simple field_name="original_name" table_name="f"/>
+			<column_simple field_name="status" table_name="f"/>
+
+			<variables>
+				<variable alias="id_movie" default="NULL" target_column="id_movie">
+					<entry type="dataset" name="movie" field="id_data" row="current"/>
+				</variable>
+			</variables>
+		</dataquery>
+		<!-- Dataset pdf upload-->
+		<dataquery id="upload_pdf" table_name="lmds_movie_pdf_file_data" varset_name="movie_pdf_file" table_alias="u">
+			<condition sql="{id_movie}={id}">
+				<field field_name="id_movie" table_name="u" alias="id_movie"/>
+				<variable alias="id" default="NULL">
+					<entry type="dataset" name="movie" field="id_data" row="current" />
+					<entry type="param" name="id_data" />
+				</variable>
+			</condition>
+
+			<join detail_table="lmds_file_data" detail_varset_name="file" detail_alias="f" sql="{id_file}={id_data}" type="left">
+				<field table_name="u" field_name="id_file" alias="id_file"/>
+				<field table_name="f" field_name="id_data" alias="id_data"/>
+			</join>
+
+			<column_simple field_name="id_data" table_name="u"/>
+			<column_simple field_name="id_movie" table_name="u"/>
+			<column_simple field_name="id_file" table_name="u"/>
+
+			<column_simple field_name="original_name" table_name="f"/>
+			<column_simple field_name="status" table_name="f"/>
+
+			<variables>
+				<variable alias="id_movie" default="NULL" target_column="id_movie">
+					<entry type="dataset" name="movie" field="id_data" row="current"/>
+				</variable>
+			</variables>
+		</dataquery>
+	</data_structure>
+
+	<!-- Mise en page -->
+	<layout disabled="false">
+		<box class="col-md-offset-2 col-md-8">
+			<statictext class="h4-like ">Movie</statictext>
+			<group>
+				<form_row>
+					<label dataset="movie" field="label" />
+					<value dataset="movie" field="label" mode="rw" class="col-md-9 col-lg-10"/>
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="sub_label" />
+					<value dataset="movie" field="sub_label" mode="rw" class="col-md-9 col-lg-10"/>
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="description" />
+					<value dataset="movie" field="description" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="teacher" />
+					<search search_param="search_string" search_dataset="search" target_dataset="movie" class="col-md-9 col-lg-10" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="level"/>
+					<value dataset="movie" field="level" mode="rw" class="col-md-9 col-lg-10" >
+						<option output="html" option_name="widget" value="WidgetSelect"/>
+					</value>
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="movie_type" />
+					<value dataset="movie" field="movie_type" mode="rw" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="tags" />
+					<tag dataset="movie" field="tags" class="col-md-9 col-lg-10" >
+						<option output="html" option_name="search_param" value="search_string"/>
+						<option output="html" option_name="search_dataset" value="search_tag"/>
+					</tag>
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="difficulty" />
+					<value dataset="movie" field="difficulty" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+				<form_row>
+					<label dataset="movie" field="position" />
+					<value dataset="movie" field="position" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+				<statictext class="h5-like ">Vidéo</statictext>
+				<form_row id="fileUploader" >
+					<upload dataset="upload">
+						<option output="html" option_name="auto_upload" value="true" />
+						<option output="html" option_name="btn_select_label" value="Parcourir..." />
+						<option output="html" option_name="btn_send_label" value="Upload" />
+						<option output="html" option_name="show_filelist" value="true" />
+						<option output="html" option_name="select_multifile" value="false" />
+						<option output="html" option_name="download_link" value="false" />
+						<option output="html" option_name="max_size" value="1000" />
+						<!--<option output="html" option_name="max_files" value="1" />-->
+					</upload>
+				</form_row>
+				<statictext class="h5-like ">Grille (PDF)</statictext>
+				<form_row id="pdfFileUploader" >
+					<upload dataset="upload_pdf">
+						<option output="html" option_name="auto_upload" value="true" />
+						<option output="html" option_name="btn_select_label" value="Parcourir..." />
+						<option output="html" option_name="btn_send_label" value="Upload" />
+						<option output="html" option_name="show_filelist" value="true" />
+						<option output="html" option_name="select_multifile" value="false" />
+						<option output="html" option_name="download_link" value="false" />
+						<option output="html" option_name="max_size" value="1000" />
+						<!--<option output="html" option_name="max_files" value="1" />-->
+					</upload>
+				</form_row>
+			</group>
+			<form_row>
+				<box class="col-xs-6">
+					<button action="exit" label="Exit">
+						<redirection module="movie" ctrl="list" action="get" />
+					</button>
+				</box>
+				<box class="col-xs-6 text-right">
+					<button action="save" label="Save" class="btn-primary">
+						<redirection module="movie" ctrl="list" action="get" />
+					</button>
+				</box>
+			</form_row>
+		</box>
+	</layout>
+</form>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<config>
+		<!-- Configuration spécifique pour le formulaire -->
+		<display_path>select-movies/teacher-list/get</display_path>
+		<!--<save_path>module/controller/action</save_path>-->
+		<!--<delete_path>group/list/delete</delete_path>-->
+		<getdataset_path>select-movies/teacher-list/getdataset</getdataset_path>
+		<!--<frame_js_class_name>FrameClassName</frame_js_class_name>-->
+	</config>
+	
+	<!-- Définition des sources données -->
+	<data_structure>
+		
+		<!-- Dataquery -->
+		<dataquery id="teacher" table_name="{pj}_user_data" varset_name="user" table_alias="u">
+			<column_simple field_name="id_data" table_name="u" />
+			<column sql="concat_ws(' ', {firstname}, {lastname})" alias="label" type="string">
+				<field table_name="u" field_name="firstname" alias="firstname"/>
+				<field table_name="u" field_name="lastname" alias="lastname"/>
+			</column>
+			<join detail_table="{pj}_pj_group_link" detail_alias="l" sql="{u.id_group}={l.id_group}">
+				<field table_name="u" field_name="id_group" alias="u.id_group"/>
+				<field table_name="l" field_name="id_group" alias="l.id_group"/>
+			</join>
+			<!-- Get only teachers in user varset: user is in root group with role teacher -->
+			<condition sql="{l.id_group_parent}=1 and {l.id_role}=2">
+				<field table_name="l" field_name="id_group_parent" alias="l.id_group_parent"/>
+				<field table_name="l" field_name="id_role" alias="l.id_role"/>
+			</condition>
+		</dataquery>
+	</data_structure>
+
+	<!-- Mise en page -->
+	<layout disabled="false">
+		<box class="col-md-offset-2 col-md-8">
+			<statictext class="h4-like ">Select teacher</statictext>
+		</box>
+		<custom dataset="teacher" class="col-md-offset-2 col-md-8">
+			<option output="html" option_name="widget" value="WidgetSelectionList"/>
+			<option output="html" option_name="uri" value="selectmovies/group-list/get/teacher/{id_data}"/>
+		</custom>
+		
+		<box id="adminHome-btn" class="col-md-offset-2 col-md-8">
+			<button id="stats-btn" action="exit" label="Stats" class="btn-sm">
+				<redirection module="stats" ctrl="index" action="get" />
+			</button>
+			<button id="settings-btn" action="exit" label="Settings" class="btn-sm">
+				<redirection module="lmdssettings" ctrl="index" action="get" />
+			</button>
+			<link href="auth/index/disconnect" method="window" class="btn btn-danger btn-sm">Disconnect</link>
+		</box>
+<!--		<box class="col-md-offset-2 col-md-8">
+			<form_row>
+				<box class="col-xs-6">
+					<button action="exit" label="Exit" />
+				</box>
+			</form_row>
+		</box>-->
+	</layout>
+</form>

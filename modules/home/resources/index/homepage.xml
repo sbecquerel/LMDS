@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<data_structure />
+	<layout>
+		<box class="col-md-offset-2 col-md-8">
+			<statictext class="h4-like ">Home</statictext>
+			<box class="list-group">				
+				<link href="selectmovies/teacher-list/get" class="list-group-item">Group - Movie attachment</link>			
+			</box>
+		</box>
+		<box id="adminHome-btn" class="col-md-12 text-right">			
+			<button id="settings-btn" action="exit" label="Settings" class="btn-sm">
+				<redirection module="lmdssettings" ctrl="index" action="get" />
+			</button>
+			<link href="auth/index/disconnect" method="window" class="btn btn-danger btn-sm">Disconnect</link>
+		</box>
+	</layout>
+</form>

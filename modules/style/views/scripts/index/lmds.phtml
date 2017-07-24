@@ -1,0 +1,354 @@
+body {
+	background: none;
+	/*background-color: rgb(249, 244, 240);*/
+	background-color: #fff;
+	padding-top: 0px;
+	line-height:1.5;
+}
+
+h2 {
+	border: 0;
+}
+
+h3 {
+	/*font-family: "Arial Black",Gadget,sans-serif;*/
+	/*font-size: 26px;*/
+}
+
+h4 {
+	/*font-family: "Arial Black",Gadget,sans-serif;*/
+	padding-bottom: 5px;
+	font-size: 20px;
+}
+
+#stats-btn, #settings-btn {
+	margin-right:2px;
+}
+
+#page {
+	border-radius: 0;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+@media (min-width: 641px) {
+	#page {
+		background: url("<?php echo $this->baseUrl(); ?>/assets/banner.png") no-repeat scroll 0 0 #fff;
+	}
+}
+@media (min-width: 981px) {
+	#page {
+		background-position: center top; 
+	}
+}
+
+#logo a {
+	background: url("<?php echo $this->baseUrl(); ?>/assets/logo.png") no-repeat scroll 0 0 #fff;
+	position: absolute;
+	top: -55px;
+	height: 112px;
+	width: 309px;
+	margin: 0 0 0 -15px;
+}
+
+/*@media (min-width: 361px) {
+	#logo a {
+		margin: 0 0 0 -20px;
+	}
+}*/
+
+@media (min-width: 641px) {
+	#logo a {
+		margin: 0 0 0 -20px;
+	}
+}
+
+@media (min-width: 769px) {
+	#logo a {
+		margin: 0 0 0 -35px;
+	}
+}
+
+#content {
+	margin-top: 85px;
+}
+
+@media (min-width: 641px) {
+	#content {
+		margin-top: 200px;
+	}
+}
+
+.panel-default {
+	border: 0;
+	box-shadow: 0 0 0;
+}
+
+.panel-default .panel-heading {
+	background-color: #fff;
+	border: 0;
+}
+
+.panel-default .panel-heading { 
+	border-bottom: 1px solid #F9D5D5;
+}
+
+.panel-default .panel-heading .panel-title {
+    font-family: "Arial Black",Gadget,sans-serif;
+    font-size: 26px;
+	color: #000;
+}
+
+.movie-item .label {
+	margin-right: 6px;
+}
+
+.movie-item .title {
+	width: 95%;
+	font-size: 11px;
+}
+
+.movie-play-icon {
+	position: absolute;
+    right: 0.7em;
+    top: 10px;
+}
+
+#videoPlayer-dialog-groupdialog-dialog {
+	background-color: #000;
+	padding: 7px;
+	border-radius: 6px;
+	top: 1%;
+	left: 50%;
+	/*width: 360px;*/
+	width: 90%;
+	/*margin: 0 0 0 -180px;*/
+	margin: 0 0 0 -45%;
+}
+
+@media (min-width: 361px) {
+	#videoPlayer-dialog-groupdialog-dialog {
+		top: 5%;
+		margin: 0 0 0 -40%;
+		width: 80%;
+	}
+}
+
+@media (min-width: 769px) {
+	#videoPlayer-dialog-groupdialog-dialog {
+		top: 10%;
+		margin: 0 0 0 -250px;
+		width: 500px;
+	}
+}
+
+
+#videoPlayer-dialog {
+	margin-top: 25px;
+}
+
+#videoPlayer-dialog-groupdialog-close {
+	position: absolute;
+	right: 6px;
+	border-color: transparent;
+	background-color: #000;
+	color: #fff;
+}
+
+div .list-std, div .list-global {
+	max-height: 800px;
+	overflow-y: scroll;
+}
+
+#main #identity {
+	margin: -20px 0 0 0;
+}
+
+#main #hello {
+	font-weight: bold;
+	font-size: 17px;
+}
+
+#adminHome-btn {
+	margin-top: 40px;
+}
+
+fieldset.group-1 {
+	background-color: #e8e8e8;
+    border: 0 none;
+    border-radius: 4px;
+}
+
+#fileUploader, #pdfFileUploader {
+	margin: 15px;
+}
+/*
+.col-videoSticker {
+	display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+*/
+.video-js .vjs-tech {
+  position: relative;
+}
+
+.videoSticker {
+	border-radius: 5px;
+	border: 1px solid #ddd;
+	padding: 10px 15px 8px;
+	margin: 10px;
+	min-height: 200px;
+	background: url(<?php echo $this->baseUrl(); ?>/assets/pellicule.png) no-repeat center center;
+}
+
+.videoSticker:hover {
+	cursor: pointer;
+	background: #f5f5f5 url(<?php echo $this->baseUrl(); ?>/assets/play.png) no-repeat center center;
+}
+
+.videoSticker h4 {
+	padding-bottom: 2px;
+	margin-bottom: 2px;
+	font-weight: bold;
+	font-size: 18px;
+	width: 95%;
+}
+
+.videoSticker .description {
+	margin-top: 13px;
+	margin-bottom: 60px;
+}
+
+.videoSticker .subLabel {
+	font-size: 16px;
+    font-weight: normal;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.videoSticker-footer {
+	/*margin-top: 29px;*/
+	bottom: 21px;    
+    position: absolute;
+}
+
+.videoSticker .author .teacher,
+.videoSticker .difficulty .difficultyValue {
+	font-weight: bold;
+}
+
+.tab-content {
+	padding-top: 5px;
+}
+
+#import-btn {
+	margin-right: 5px;
+}
+
+.noFavorite-icon,
+.favorite-icon {
+	/* Attention à mettre à jour la taille pour l'animation dans le widget movies, méthode _animateStar */
+	font-size: 25px;    
+    position: absolute;
+    right: 31px;
+    top: 7px;
+}
+
+.pdf-icon {
+	padding-left: 5px;
+}
+
+@media (min-width: 768px) {
+	.noFavorite-icon,
+	.favorite-icon {
+		top: 18px;
+	}
+}
+
+.noFavorite-icon {
+	color: #C6C6C6;
+}
+
+.noFavorite-icon:hover {
+	color: #C6C6C6;
+}
+
+.favorite-icon {
+	color: #FFD600;
+}
+
+.favorite-icon:hover {
+	color: #FFFFCC;
+}
+
+.label-unplayedCounter {
+    position: absolute;
+    right: -6px;
+    top: -8px;
+	z-index: 99;
+}
+
+
+.faq {
+	background: #FFF;
+	/* auto ne marche pas sur chrome */
+	min-height: 10px;
+	margin: 2px 0;
+	padding: 4px 8px;
+}
+
+.faq:hover {
+	background: #f5f5f5;
+}
+
+.unplayed {
+	background-color: #d9edf7;
+	color: #31708f;
+}
+
+.essential {
+	background-color: #FF918B;
+}
+
+.funny {
+	background-color: #DEDB19;
+}
+
+#unplayed-btn {
+	margin-left: 3px;
+}
+
+#auth_std, #auth_cps, #auth_oauth, #auth_message {
+	width: auto;
+}
+
+@media (min-width: 321px) {
+	#auth_std, #auth_cps, #auth_oauth, #auth_message {
+		width: 310px;
+	}
+}
+
+.label-caged {
+	background-color: #f0ad4e;
+}
+
+.label-theorie {
+	background-color: #714764;
+}
+
+.label-difficile {
+	background-color: #d9534f;
+}
+
+.label-exercice {
+	background-color: #5cb85c;
+}
+
+#connections-chart
+{
+    margin:10px 10px 10px 10px;
+    width:90%;
+    /*max-width: 800px;*/
+    height:400px;
+}

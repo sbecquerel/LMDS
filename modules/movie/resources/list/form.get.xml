@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<config>
+		<!-- Configuration spécifique pour le formulaire -->
+		<display_path>movie/list/get</display_path>
+		<!--<save_path>module/controller/action</save_path>-->
+		<delete_path>movie/list/delete</delete_path>
+		<getdataset_path>movie/list/getdataset</getdataset_path>
+		<!--<frame_js_class_name>FrameClassName</frame_js_class_name>-->
+	</config>
+	
+	<!-- Définition des sources données -->
+	<data_structure>
+		<dataset id="filter" type="filter" mute_refresh_event="true">
+			<metadata>
+				<fields>
+					<field id="label" type="string" default_label="Titre">
+						<string length="255"/>
+					</field>
+					<field id="teacher" type="integer" default_label="Prof."/>
+					<field id="level" type="fkey_dico" default_label="Level">
+						<fkey_dico dico_name="level"/>
+					</field>
+					<field id="movie_type" type="fkey_dico" default_label="Type">
+						<fkey_dico dico_name="movie_type"/>
+					</field>
+					<field id="tags" type="string" default_label="Tags">
+						<string length="255"/>
+					</field>
+					<field id="difficulty" type="integer" default_label="Difficulté"/>
+				</fields>
+			</metadata>
+		</dataset>
+
+		<!-- Dataquery -->
+		<dataquery id="movie" table_name="{pj}_movie_data" varset_name="movie" table_alias="m" begin="0" range="10">
+			<column_simple field_name="id_data" table_name="m" />
+			<column_simple field_name="label" table_name="m" />
+			<column_simple field_name="level" table_name="m" />
+			<column_simple field_name="tags" table_name="m" />
+			<column_simple field_name="movie_type" table_name="m" />
+			<column_simple field_name="difficulty" table_name="m" />
+			<column_simple field_name="position" table_name="m" />
+			<column sql="concat_ws(' ', {firstname}, {lastname})" alias="identity" type="string">
+				<field table_name="u" field_name="firstname" alias="firstname"/>
+				<field table_name="u" field_name="lastname" alias="lastname"/>
+			</column>
+			<join detail_table="{pj}_user_data" detail_alias="u" sql="{m.teacher}={u.id_data}" detail_varset_name="user">
+				<field table_name="u" field_name="id_data" alias="u.id_data"/>
+				<field table_name="m" field_name="teacher" alias="m.teacher"/>
+			</join>
+			<condition sql="{label} LIKE CONCAT('%', {f.label}, '%')" optional="true">
+				<field table_name="m" field_name="label" alias="label"/>
+				<variable alias="f.label" default="NULL">
+					<entry type="param" name="label" />
+					<entry type="dataset" name="filter" field="label" row="current" />
+				</variable>
+			</condition>
+			<condition sql="{teacher}={f.teacher}" optional="true">
+				<field table_name="m" field_name="teacher" alias="teacher"/>
+				<variable alias="f.teacher" default="NULL">
+					<entry type="param" name="teacher" />
+					<entry type="dataset" name="filter" field="teacher" row="current" />
+				</variable>
+			</condition>
+			<condition sql="{level}={f.level}" optional="true">
+				<field table_name="m" field_name="level" alias="level"/>
+				<variable alias="f.level" default="NULL">
+					<entry type="param" name="level" />
+					<entry type="dataset" name="filter" field="level" row="current" />
+				</variable>
+			</condition>
+			<condition sql="{movie_type}={f.movie_type}" optional="true">
+				<field table_name="m" field_name="movie_type" alias="movie_type"/>
+				<variable alias="f.movie_type" default="NULL">
+					<entry type="param" name="movie_type" />
+					<entry type="dataset" name="filter" field="movie_type" row="current" />
+				</variable>
+			</condition>
+			<condition sql="{tags} LIKE CONCAT('%', {f.tags}, '%')" optional="true">
+				<field table_name="m" field_name="tags" alias="tags"/>
+				<variable alias="f.tags" default="NULL">
+					<entry type="param" name="tags" />
+					<entry type="dataset" name="filter" field="tags" row="current" />
+				</variable>
+			</condition>
+			<condition sql="{difficulty}={f.difficulty}" optional="true">
+				<field table_name="m" field_name="difficulty" alias="difficulty"/>
+				<variable alias="f.difficulty" default="NULL">
+					<entry type="param" name="difficulty" />
+					<entry type="dataset" name="filter" field="difficulty" row="current" />
+				</variable>
+			</condition>
+		</dataquery>
+		
+		<dataquery id="teacher" table_name="{pj}_user_data" varset_name="user" table_alias="t">
+			<column_simple field_name="id_data" table_name="t" />
+			<column sql="concat_ws(' ', {firstname}, {lastname})" alias="label" type="string">
+				<field table_name="t" field_name="firstname" alias="firstname"/>
+				<field table_name="t" field_name="lastname" alias="lastname"/>
+			</column>
+			<join detail_table="{pj}_pj_group_link" detail_alias="g" sql="{t.id_group}={g.id_group}" >
+				<field table_name="t" field_name="id_group" alias="t.id_group"/>
+				<field table_name="g" field_name="id_group" alias="g.id_group"/>
+			</join>
+			<condition sql="{g.id_role}=2">
+				<field table_name="g" field_name="id_role" alias="g.id_role"/>
+			</condition>
+			<group_by sql="{id_data}">
+				<field table_name="t" field_name="id_data" alias="id_data"/>
+			</group_by>
+		</dataquery>
+		
+	</data_structure>
+
+	<!-- Mise en page -->
+	<layout disabled="false">
+		<box class="col-md-offset-2 col-md-8">
+			<statictext class="h4-like ">Movie list</statictext>
+			<group>
+				<form_row>
+					<label dataset="filter" field="teacher"/>
+					<value dataset="filter" field="teacher" mode="rw" class="col-md-9 col-lg-10" >
+						<option output="html" option_name="widget" value="WidgetSelect" />
+						<option output="html" option_name="dataset" value="teacher" />
+					</value>
+				</form_row>
+				<form_row>
+					<label dataset="filter" field="label"/>
+					<value dataset="filter" field="label" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+				<form_row>
+					<label dataset="filter" field="level"/>
+					<value dataset="filter" field="level" mode="rw" class="col-md-9 col-lg-10" >
+						<option output="html" option_name="widget" value="WidgetSelect" />
+					</value>
+				</form_row>
+				<form_row>
+					<label dataset="filter" field="movie_type"/>
+					<value dataset="filter" field="movie_type" mode="rw" class="col-md-9 col-lg-10" >
+						<option output="html" option_name="widget" value="WidgetSelect" />
+					</value>
+				</form_row>
+				<form_row>
+					<label dataset="filter" field="tags"/>
+					<value dataset="filter" field="tags" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+				<form_row>
+					<label dataset="filter" field="difficulty"/>
+					<value dataset="filter" field="difficulty" mode="rw" class="col-md-9 col-lg-10" />
+				</form_row>
+				
+				<box class="col-xs-12 text-right">
+					<button action="refresh_dataset" label="Rechercher..." dataset="movie" class="btn-primary text-right">
+						<option output="html" option_name="glyphicon" value="glyphicon-search" />
+					</button>
+				</box>	
+			</group>
+			<table dataset="movie">
+				<options>
+					<option output="html" option_name="edit_url" value="movie/edit/get/id_data/{id_data}"/>
+					<option output="html" option_name="enable_deletion" value="true"/>
+				</options>
+				<columns>
+					<column field="label" title="Label"/>
+					<column field="level" title="Level"/>					
+					<column field="identity" title="Teacher"/>
+					<column field="movie_type" title="Movie type"/>
+					<column field="tags" title="Tags"/>
+					<column field="difficulty" title="Difficulté"/>
+					<column field="position" title="Position"/>
+				</columns>
+			</table>
+			<paginator dataset="movie"/>
+			<form_row>
+				<box class="col-xs-6">
+					<button action="exit" label="Exit"/>
+				</box>
+				<box class="col-xs-6 text-right">
+					<button id="import-btn" action="exit" label="Import" >
+						<redirection module="movie" ctrl="import" action="get" />
+					</button>
+					<button action="exit" label="Add" class="btn-primary">
+						<redirection module="movie" ctrl="edit" action="get" />
+					</button>
+				</box>
+			</form_row>
+		</box>
+	</layout>
+</form>

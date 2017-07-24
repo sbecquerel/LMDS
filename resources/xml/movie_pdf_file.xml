@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<varset name="movie_pdf_file" prefix="movie_pdf_file" type="join" label="Movie PDF file">
+    <var uid="1" id="id_movie" type="fkey_varset">
+        <fkey_varset varset_name="movie"/>
+    </var>
+    <var uid="2" id="id_file" type="fkey_varset">
+        <fkey_varset varset_name="file"/>
+    </var>
+</varset>

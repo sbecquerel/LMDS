@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form id="list_of_interventions">
+	<config >
+		<!-- Controller used to manage date format for chart -->
+		<display_path>stats/connection/get</display_path>
+		<getdataset_path>stats/connection/getdataset</getdataset_path>
+	</config>
+
+    <data_structure>
+
+		<!-- Filter dataset -->
+		<dataset id="filter" type="filter" mute_refresh_event="true">
+			<metadata>
+				<fields>
+					<field id="connection_date_min" type="date"/>
+					<field id="connection_date_max" type="date"/>
+				</fields>
+			</metadata>
+		</dataset>
+
+		<!-- Settings dataset
+		Date formats for chart, date_format field is used in dataquery connections 
+		for connection_date field format and group_by.
+		id_data of dico are replace by format (ex: %d/%m/%Y) on server side, in stats/connection
+		controller.-->
+		<dataset id="settings" mute_refresh_event="true">
+			<metadata>
+				<fields>
+					<field id="format" type="fkey_dico" default_label="Format">
+						<fkey_dico dico_name="date_format"/>
+					</field>
+				</fields>
+			</metadata>
+		</dataset>
+
+        <!-- Dataquery used for chart, limit 0,20 -->
+        <dataquery id="connections" table_name="{pj}_evtlog_data" varset_name="evtlog" table_alias="e" begin="0" range="20">
+
+			<!-- Connection date, format came from dataset settings -->
+			<column sql="DATE_FORMAT( {e.evt_datetime}, {s.format} )" alias="category">
+  				<field field_name="evt_datetime" table_name="e" alias="e.evt_datetime"/>
+				<variable alias="s.format" default="%V-%Y">
+					<entry type="param" name="date_format" />
+					<entry type="dataset" name="settings" row="current" field="format" />
+				</variable>
+			</column>
+
+			<column sql="COUNT( DISTINCT {e.id_data} )" alias="connections" type="integer">
+  				<field field_name="id_data" table_name="e" alias="e.id_data"/>
+			</column>
+
+			<join detail_table="{pj}_user_data" detail_alias="u" sql="{e.id_owner}={u.id_group}" 
+				  type="left" detail_varset_name="user">
+				<field table_name="e" field_name="id_owner" alias="e.id_owner"/>
+				<field table_name="u" field_name="id_group" alias="u.id_group"/>
+			</join>
+
+			<!-- Conditions based on filter -->
+			<condition sql="{e.evt_datetime} &gt;= {f.connection_date_min}" optional="true">
+				<field field_name="evt_datetime" alias="e.evt_datetime" table_name="e"/>
+				<variable alias="f.connection_date_min" default="null">
+					<entry type="param" name="connection_date_min" />
+					<entry type="dataset" name="filter" row="current" field="connection_date_min" />
+				</variable>
+			</condition>
+			<condition sql="{e.evt_datetime} &lt;= {f.connection_date_max}" optional="true">
+				<field field_name="evt_datetime" alias="e.evt_datetime" table_name="e"/>
+				<variable alias="f.connection_date_max" default="null">
+					<entry type="param" name="connection_date_max" />
+					<entry type="dataset" name="filter" row="current" field="connection_date_max" />
+				</variable>
+			</condition>
+			<!-- On exclut les prof et l'utilisateur guitare qui ont staff=1 -->
+			<condition sql="{u.staff} IS NULL">
+				<field field_name="staff" alias="u.staff" table_name="u"/>
+			</condition>
+			
+			<condition sql="{e.evt_name} = 'VZN_EVT_CONNEXION'">
+				<field field_name="evt_name" alias="e.evt_name" table_name="e"/>
+			</condition>
+			
+			<order_by sql="{e.evt_datetime}">
+				<field field_name="evt_datetime" alias="e.evt_datetime" table_name="e"/>
+			</order_by>
+			
+			<!-- Date format came from settings dataset -->
+			<group_by sql="DATE_FORMAT( {e.evt_datetime}, {s.format} )">
+				<field field_name="evt_datetime" alias="e.evt_datetime" table_name="e"/>
+				<variable alias="s.format" default="%V/%Y">
+					<entry type="param" name="date_format" />
+					<entry type="dataset" name="settings" row="current" field="format" />
+				</variable>
+			</group_by>
+			
+        </dataquery>
+		
+		<!-- Dataquery used for chart, limit 0,20 -->
+        <dataquery id="users" table_name="{pj}_evtlog_data" varset_name="evtlog" table_alias="e" begin="0" range="10">
+
+			<column sql="{u.username}" alias="username">
+  				<field field_name="username" table_name="u" alias="u.username"/>
+			</column>
+			<column sql="concat( {u.firstname}, ' ', {u.lastname} )" alias="identite" type="string">
+  				<field field_name="firstname" table_name="u" alias="u.firstname"/>
+				<field field_name="lastname" table_name="u" alias="u.lastname"/>
+			</column>
+			
+			<column sql="COUNT( DISTINCT {e.id_data} )" alias="connections" type="integer">
+  				<field field_name="id_data" table_name="e" alias="e.id_data"/>
+			</column>
+			
+			<join detail_table="{pj}_user_data" detail_alias="u" sql="{e.id_owner}={u.id_group}" 
+				  type="left" detail_varset_name="user">
+				<field table_name="e" field_name="id_owner" alias="e.id_owner"/>
+				<field table_name="u" field_name="id_group" alias="u.id_group"/>
+			</join>
+			
+			<!-- On exclut les prof et l'utilisateur guitare qui ont staff=1 -->
+			<condition sql="{u.staff} IS NULL">
+				<field field_name="staff" alias="u.staff" table_name="u"/>
+			</condition>
+			
+			<condition sql="{e.evt_name} = 'VZN_EVT_CONNEXION'">
+				<field field_name="evt_name" alias="e.evt_name" table_name="e"/>
+			</condition>
+			
+			<condition sql="{e.evt_datetime} > ( CURDATE() - INTERVAL 4 WEEK ) ">
+				<field field_name="evt_datetime" alias="e.evt_datetime" table_name="e"/>
+			</condition>
+			
+			<order_by sql="connections desc"/>
+			
+			<group_by sql="{e.id_owner}">
+				<field field_name="id_owner" alias="e.id_owner" table_name="e"/>
+			</group_by>
+			
+        </dataquery>
+		
+    </data_structure>
+    <!-- Mise en page -->
+    <layout title="Connexions" disabled="false">
+	
+		<!-- Filter -->
+		<group>
+		  	<form_row>
+				<statictext class="col-sm-3 control-label">Date de connexion entre</statictext>
+				<value class="col-sm-3" dataset="filter" field="connection_date_min" mode="rw"/>
+				<statictext class="col-sm-1 control-label">et le</statictext>
+				<value class="col-sm-3" dataset="filter" field="connection_date_max" mode="rw"/>
+			</form_row>
+			<form_row>
+				<label class="col-sm-3" dataset="settings" field="format"/>
+				<value class="col-sm-2" dataset="settings" field="format" mode="rw" >
+					<option output="html" option_name="widget" value="WidgetSelect" />
+				</value>
+			</form_row>
+			<box class="col-xs-12 text-right">
+				<button action="refresh_dataset" label="Search..." class="btn-primary" dataset="connections">
+					<option output="html" option_name="glyphicon" value="glyphicon-search"/>
+				</button>
+			</box>		
+		</group>
+		
+		<!-- Chart -->
+		<custom id="connections-chart" dataset="connections">
+			<option output="html" option_name="widget" value="WidgetChart"/>
+		</custom>
+		
+		<title value="10 élèves avec le plus de connexions sur les 3 dernières semaines"/>
+		
+		<table dataset="users">
+			<columns>
+					<column field="username" title="Login" />	
+					<column field="identite" title="Nom"/>	
+					<column field="connections" title="Connexions"/>
+			</columns>
+		</table>
+
+		<form_row>
+			<box class="col-xs-12">
+				<button action="exit" label="Back" >
+					<redirection module="stats" ctrl="index" action="get"/>
+				</button>
+			</box>
+		</form_row>
+
+    </layout>
+</form>

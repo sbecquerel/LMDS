@@ -1,0 +1,130 @@
+# Voozanoo application PO file.
+# Copyright (C) 2626/0202/20152015 Voozanoo / Epiconcept
+# This file is distributed under the same license as the Voozanoo package.
+# FIRST AUTHOR <voozanoo@epiconcept.fr>, 2626/0202/20152015
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Voozanoo \n"
+"Report-Msgid-Bugs-To: voozanoo@epiconcept.fr\n"
+"POT-Creation-Date: 2626/0202/20152015 00:00+0100\n"
+"PO-Revision-Date: 2015-02-26 07:25+0100\n"
+"Last-Translator: Voozanoo team <voozanoo@epiconcept.fr>\n"
+"Language: en \n"
+"Language-Team: en <voozanoo.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# form.get.xml
+msgid "Group"
+msgstr ""
+
+# form.get.xml / form.get.xml / form.get.xml / form.get.xml / form.get.xml
+msgid "Exit"
+msgstr ""
+
+# form.get.xml / form.get.xml / form.get.xml
+msgid "Save"
+msgstr ""
+
+# form.get.xml
+msgid "Group list"
+msgstr ""
+
+# form.get.xml / form.get.xml / form.get.xml / Varset movie, variable label / Varset group, variable label
+msgid "Label"
+msgstr ""
+
+# form.get.xml / form.get.xml / Varset movie, variable level / Varset group, variable level
+msgid "Level"
+msgstr ""
+
+# form.get.xml / form.get.xml / Varset movie, variable teacher / Varset group, variable teacher
+msgid "Teacher"
+msgstr ""
+
+# form.get.xml / form.get.xml
+msgid "Add"
+msgstr ""
+
+# homepage.xml
+msgid "Home"
+msgstr ""
+
+# homepage.xml
+msgid "Group - Movie attachment"
+msgstr ""
+
+# homepage.xml / form.get.xml
+msgid "Settings"
+msgstr ""
+
+# homepage.xml
+msgid "Disconnect"
+msgstr ""
+
+# form.get.xml
+msgid "Groups"
+msgstr ""
+
+# form.get.xml / Varset group, variable movies
+msgid "Movies"
+msgstr ""
+
+# form.get.xml
+msgid "Users"
+msgstr ""
+
+# form.get.xml
+msgid "Vzn Groups"
+msgstr ""
+
+# form.get.xml
+msgid "Roles"
+msgstr ""
+
+# form.get.xml
+msgid "Dictionnaries"
+msgstr ""
+
+# form.get.xml
+msgid "Resources"
+msgstr ""
+
+# form.get.xml / form.get.xml / form.get.xml
+msgid "Back"
+msgstr ""
+
+# form.get.xml
+msgid "Movie"
+msgstr ""
+
+# form.get.xml
+msgid "Movie list"
+msgstr ""
+
+# form.get.xml / Varset movie, variable movie_type
+msgid "Movie type"
+msgstr ""
+
+# form.get.xml
+msgid "Select group"
+msgstr ""
+
+# form.get.xml
+msgid "Select teacher"
+msgstr ""
+
+# form.get.xml
+msgid "Salut Sébastien, ton niveau est 3+ / 27-"
+msgstr ""
+
+# form.get.xml
+msgid "Déconnexion"
+msgstr ""
+
+# Varset played_movie, variable id_movie
+msgid "Played movie"
+msgstr ""
+

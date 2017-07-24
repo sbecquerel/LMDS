@@ -1,0 +1,16 @@
+{
+	"PACKAGING": {
+		"INF_PACKAGE":"LMDS",
+		"INF_VERSION":"01.00",
+		"INF_PRIORITY":"optional",
+		"INF_ARCHITECTURE":"all",
+		"INF_DEPENDS":"voozanoo4-2.15",
+		"INF_SECTION":"base",
+		"INF_MAINTENER":"Team FrameWork <framework@epiconcept.fr>",
+		"INF_DESCRIPTION":"La maison des sons",
+		"INF_HOMEPAGE":"http://www.epiconcept.fr"
+	},
+	"DEPENDENCIES":{
+		"VOOZANOO4":"2.15"
+	}
+}

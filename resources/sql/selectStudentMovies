@@ -1,0 +1,181 @@
+SELECT 
+	gm.id_data,
+	m.id_data,
+	p.id_data,
+	u.id_data
+FROM `lmds_grp_movie_data` AS `gm`
+LEFT JOIN `lmds_movie_data` AS `m` ON gm.id_movie=m.id_data
+LEFT JOIN `lmds_played_movie_data` AS `p` ON m.id_data=p.id_movie AND p.id_owner=43 
+LEFT JOIN `lmds_user_data` AS `u` ON m.teacher=u.id_data 
+
+
+SELECT 
+	if( p.id_data IS NOT NULL, 1, 0) AS `played`, concat_ws(' ', u.firstname, u.lastname) AS `teacher`, 
+	m.id_data AS `id_data`, m.label AS `label`, m.sub_label AS `sub_label`, m.description AS `description`, 
+	m.level AS `level`, m.movie_type AS `movie_type`, m.tags AS `tags`, m.difficulty AS `difficulty`, 
+	p.favorite AS `favorite` 
+FROM `lmds_grp_movie_data` AS `gm`
+LEFT JOIN `lmds_movie_data` AS `m` ON gm.id_movie=m.id_data
+LEFT JOIN `lmds_played_movie_data` AS `p` ON m.id_data=p.id_movie AND p.id_owner=43 
+LEFT JOIN `lmds_user_data` AS `u` ON m.teacher=u.id_data 
+
+
+WHERE 
+	(
+		gm.id_data is NULL or (
+			exists(
+				select 1 from lmds_grp_movie_data_group where lmds_grp_movie_data_group.id_group in (337) and 
+				lmds_grp_movie_data_group.id_data = gm.id_data)) OR ( 
+			exists( 
+				select 1 from lmds_grp_movie_data_group 
+				inner join lmds_grp_movie_data_group_mode on 
+				lmds_grp_movie_data_group.id_data_group=lmds_grp_movie_data_group_mode.id_data_group where 
+				lmds_grp_movie_data_group.id_group = 43 and lmds_grp_movie_data_group.id_data = gm.id_data and 
+				lmds_grp_movie_data_group_mode.mode & 292 AND (lmds_grp_movie_data_group_mode.date_valid IS NULL OR 
+				CURRENT_DATE <= lmds_grp_movie_data_group_mode.date_valid)))) AND (m.id_data is NULL or (
+			exists(
+				select 1 from lmds_movie_data_group where lmds_movie_data_group.id_group in (337) and 
+				lmds_movie_data_group.id_data = m.id_data)) OR ( 
+			exists( 
+				select 1 from lmds_movie_data_group 
+				inner join lmds_movie_data_group_mode on lmds_movie_data_group.id_data_group=lmds_movie_data_group_mode.id_data_group 
+				where lmds_movie_data_group.id_group = 43 and lmds_movie_data_group.id_data = m.id_data and 
+				lmds_movie_data_group_mode.mode & 292 AND (lmds_movie_data_group_mode.date_valid IS NULL OR 
+				CURRENT_DATE <= lmds_movie_data_group_mode.date_valid)))) AND (p.id_data is NULL or (
+			exists(
+				select 1 from lmds_played_movie_data_group where lmds_played_movie_data_group.id_group in (337) and 
+				lmds_played_movie_data_group.id_data = p.id_data)) OR ( 
+			exists( 
+				select 1 from lmds_played_movie_data_group 
+				inner join lmds_played_movie_data_group_mode on 
+				lmds_played_movie_data_group.id_data_group=lmds_played_movie_data_group_mode.id_data_group where 
+				lmds_played_movie_data_group.id_group = 43 and lmds_played_movie_data_group.id_data = p.id_data and 
+				lmds_played_movie_data_group_mode.mode & 292 AND (lmds_played_movie_data_group_mode.date_valid IS NULL OR 
+				CURRENT_DATE <= lmds_played_movie_data_group_mode.date_valid)))) 
+
+GROUP BY `m`.`id_data` 
+ORDER BY `m`.`level` ASC, `m`.`position` ASC 
+LIMIT 14000
+
+
+SELECT 
+	gm.id_data,
+	m.id_data,
+	p.id_data,
+	u.id_data
+FROM `lmds_grp_movie_data` AS `gm`
+LEFT JOIN `lmds_movie_data` AS `m` ON gm.id_movie=m.id_data
+LEFT JOIN `lmds_played_movie_data` AS `p` ON m.id_data=p.id_movie AND p.id_owner=43 
+LEFT JOIN `lmds_user_data` AS `u` ON m.teacher=u.id_data 
+
+
+SELECT 
+	if( p.id_data IS NOT NULL, 1, 0) AS `played`, concat_ws(' ', u.firstname, u.lastname) AS `teacher`, 
+	m.id_data AS `id_data`, m.label AS `label`, m.sub_label AS `sub_label`, m.description AS `description`, 
+	m.level AS `level`, m.movie_type AS `movie_type`, m.tags AS `tags`, m.difficulty AS `difficulty`, 
+	p.favorite AS `favorite` 
+FROM `lmds_grp_movie_data` AS `gm`
+LEFT JOIN `lmds_movie_data` AS `m` ON gm.id_movie=m.id_data
+LEFT JOIN `lmds_played_movie_data` AS `p` ON m.id_data=p.id_movie AND p.id_owner=43 
+LEFT JOIN `lmds_user_data` AS `u` ON m.teacher=u.id_data 
+
+
+WHERE 
+	(
+		gm.id_data is NULL or (
+			exists(
+				select 1 from lmds_grp_movie_data_group where lmds_grp_movie_data_group.id_group in (337) and 
+				lmds_grp_movie_data_group.id_data = gm.id_data)
+		) OR ( 
+			exists( 
+				select 1 from lmds_grp_movie_data_group 
+				inner join lmds_grp_movie_data_group_mode on 
+				lmds_grp_movie_data_group.id_data_group=lmds_grp_movie_data_group_mode.id_data_group where 
+				lmds_grp_movie_data_group.id_group = 43 and lmds_grp_movie_data_group.id_data = gm.id_data and 
+				lmds_grp_movie_data_group_mode.mode & 292 AND (lmds_grp_movie_data_group_mode.date_valid IS NULL OR 
+				CURRENT_DATE <= lmds_grp_movie_data_group_mode.date_valid)))
+	) AND (
+		m.id_data is NULL or (
+			exists(
+				select 1 from lmds_movie_data_group where lmds_movie_data_group.id_group in (337) and 
+				lmds_movie_data_group.id_data = m.id_data)
+		) OR ( 
+			exists( 
+				select 1 from lmds_movie_data_group 
+				inner join lmds_movie_data_group_mode on lmds_movie_data_group.id_data_group=lmds_movie_data_group_mode.id_data_group 
+				where lmds_movie_data_group.id_group = 43 and lmds_movie_data_group.id_data = m.id_data and 
+				lmds_movie_data_group_mode.mode & 292 AND (lmds_movie_data_group_mode.date_valid IS NULL OR 
+				CURRENT_DATE <= lmds_movie_data_group_mode.date_valid)))
+	) AND (
+		p.id_data is NULL or (
+			exists(
+				select 1 from lmds_played_movie_data_group where lmds_played_movie_data_group.id_group in (337) and 
+				lmds_played_movie_data_group.id_data = p.id_data)) OR ( 
+			exists( 
+				select 1 from lmds_played_movie_data_group 
+				inner join lmds_played_movie_data_group_mode on 
+				lmds_played_movie_data_group.id_data_group=lmds_played_movie_data_group_mode.id_data_group where 
+				lmds_played_movie_data_group.id_group = 43 and lmds_played_movie_data_group.id_data = p.id_data and 
+				lmds_played_movie_data_group_mode.mode & 292 AND (lmds_played_movie_data_group_mode.date_valid IS NULL OR 
+				CURRENT_DATE <= lmds_played_movie_data_group_mode.date_valid)))
+	) 
+
+AND m.label like '%Hey%'
+
+GROUP BY `m`.`id_data` 
+ORDER BY `m`.`level` ASC, `m`.`position` ASC 
+LIMIT 14000
+
+
+
+
+SELECT 
+	(select if( id_data IS NOT NULL, 1, 0) from lmds_played_movie_data where id_movie=m.id_data and id_owner=43) as `played`,
+	(select favorite from lmds_played_movie_data where id_movie=m.id_data and id_owner=43) AS `favorite`,
+	concat_ws(' ', u.firstname, u.lastname) AS `teacher`, 
+	m.id_data AS `id_data`, m.label AS `label`, m.sub_label AS `sub_label`, m.description AS `description`, 
+	m.level AS `level`, m.movie_type AS `movie_type`, m.tags AS `tags`, m.difficulty AS `difficulty`
+	
+FROM `lmds_grp_movie_data` AS `gm`
+LEFT JOIN `lmds_movie_data` AS `m` ON gm.id_movie=m.id_data
+LEFT JOIN `lmds_played_movie_data` AS `p` ON m.id_data=p.id_movie AND p.id_owner=43 
+LEFT JOIN `lmds_user_data` AS `u` ON m.teacher=u.id_data 
+
+WHERE 
+	(
+		gm.id_data is NULL or (
+			exists(
+				select 1 from lmds_grp_movie_data_group where lmds_grp_movie_data_group.id_group in (337) and 
+				lmds_grp_movie_data_group.id_data = gm.id_data)
+		) OR ( 
+			exists( 
+				select 1 from lmds_grp_movie_data_group 
+				inner join lmds_grp_movie_data_group_mode on 
+				lmds_grp_movie_data_group.id_data_group=lmds_grp_movie_data_group_mode.id_data_group where 
+				lmds_grp_movie_data_group.id_group = 43 and lmds_grp_movie_data_group.id_data = gm.id_data and 
+				lmds_grp_movie_data_group_mode.mode & 292 AND (lmds_grp_movie_data_group_mode.date_valid IS NULL OR 
+				CURRENT_DATE <= lmds_grp_movie_data_group_mode.date_valid)))
+	) AND (
+		m.id_data is NULL or (
+			exists(
+				select 1 from lmds_movie_data_group where lmds_movie_data_group.id_group in (337) and 
+				lmds_movie_data_group.id_data = m.id_data)
+		) OR ( 
+			exists( 
+				select 1 from lmds_movie_data_group 
+				inner join lmds_movie_data_group_mode on lmds_movie_data_group.id_data_group=lmds_movie_data_group_mode.id_data_group 
+				where lmds_movie_data_group.id_group = 43 and lmds_movie_data_group.id_data = m.id_data and 
+				lmds_movie_data_group_mode.mode & 292 AND (lmds_movie_data_group_mode.date_valid IS NULL OR 
+				CURRENT_DATE <= lmds_movie_data_group_mode.date_valid)))
+	) 
+
+AND m.label like '%Hey%'
+
+GROUP BY `m`.`id_data` 
+ORDER BY `m`.`level` ASC, `m`.`position` ASC 
+LIMIT 14000
+
+
+
+
+SELECT (SELECT IF( `id_data` IS NOT NULL, 1, 0) FROM `lmds_played_movie_data` WHERE `id_movie`=m.`id_data` AND `id_owner`=43) AS `played`, (SELECT `favorite` FROM `lmds_played_movie_data` WHERE `id_movie`=m.`id_data` AND `id_owner`=43) AS `favorite`, concat_ws(' ', u.firstname, u.lastname) AS `teacher`, m.id_data AS `id_data`, m.label AS `label`, m.sub_label AS `sub_label`, m.description AS `description`, m.level AS `level`, m.movie_type AS `movie_type`, m.tags AS `tags`, m.difficulty AS `difficulty` FROM `lmds_grp_movie_data` AS `gm`\n LEFT JOIN `lmds_movie_data` AS `m` ON gm.id_movie=m.id_data\n LEFT JOIN `lmds_user_data` AS `u` ON m.teacher=u.id_data WHERE (gm.id_data is NULL or (exists(select 1 from lmds_grp_movie_data_group where lmds_grp_movie_data_group.id_group in (337) and lmds_grp_movie_data_group.id_data = gm.id_data)) OR ( exists( select 1 from lmds_grp_movie_data_group inner join lmds_grp_movie_data_group_mode on lmds_grp_movie_data_group.id_data_group=lmds_grp_movie_data_group_mode.id_data_group where lmds_grp_movie_data_group.id_group = 43 and lmds_grp_movie_data_group.id_data = gm.id_data and lmds_grp_movie_data_group_mode.mode & 292 AND (lmds_grp_movie_data_group_mode.date_valid IS NULL OR CURRENT_DATE <= lmds_grp_movie_data_group_mode.date_valid)))) AND (m.id_data is NULL or (exists(select 1 from lmds_movie_data_group where lmds_movie_data_group.id_group in (337) and lmds_movie_data_group.id_data = m.id_data)) OR ( exists( select 1 from lmds_movie_data_group inner join lmds_movie_data_group_mode on lmds_movie_data_group.id_data_group=lmds_movie_data_group_mode.id_data_group where lmds_movie_data_group.id_group = 43 and lmds_movie_data_group.id_data = m.id_data and lmds_movie_data_group_mode.mode & 292 AND (lmds_movie_data_group_mode.date_valid IS NULL OR CURRENT_DATE <= lmds_movie_data_group_mode.date_valid)))) GROUP BY `m`.`id_data` ORDER BY `m`.`level` ASC, `m`.`position` ASC LIMIT 14000

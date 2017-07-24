@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<data_structure />
+	<layout>
+		<box class="col-md-offset-2 col-md-8">
+			<statictext class="h4-like">Stats</statictext>
+			<box class="list-group">
+				<link href="stats/connection/get" class="list-group-item">Connexions</link>
+			</box>
+			<box>
+				<button action="exit" label="Back"/>
+			</box>
+		</box>
+	</layout>
+</form>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<config>
+		<!-- Configuration spécifique pour le formulaire -->
+		<display_path>selectmovies/movies/get</display_path>
+		<save_path>selectmovies/movies/save</save_path>
+		<!--<delete_path>group/list/delete</delete_path>-->
+		<!--<getdataset_path>selectmovies/movies/getdataset</getdataset_path>-->
+		<frame_js_class_name>FrameFormSelectMovies</frame_js_class_name>
+	</config>
+	
+	<!-- Définition des sources données -->
+	<data_structure>
+		<dataquery id="movie" table_name="{pj}_movie_data" varset_name="movie" table_alias="m">
+			<column_simple field_name="id_data" table_name="m" />
+			<column_simple field_name="label" table_name="m" />
+			<column_simple field_name="level" table_name="m" />
+			<column_simple field_name="movie_type" table_name="m" />	
+			<column_simple field_name="tags" table_name="m" />	
+			<!-- This column is filled in ctrl -->
+			<column sql="" alias="selected" type="boolean"/>
+
+			<join detail_table="{pj}_user_data" detail_alias="u" sql="{m.teacher}={u.id_data}" 
+				  type="inner" detail_varset_name="user">
+				<field table_name="m" field_name="teacher" alias="m.teacher"/>
+				<field table_name="u" field_name="id_data" alias="u.id_data"/>
+			</join>
+			
+			<column sql="concat_ws(' ', {firstname}, {lastname})" alias="teacher" type="string">
+				<field table_name="u" field_name="firstname" alias="firstname"/>
+				<field table_name="u" field_name="lastname" alias="lastname"/>
+			</column>
+			
+			
+			<!-- @todo: Teacher group can change, in this case we must select previous teacher movies -->
+			<!-- {m.movie_type} = 12 => "Global" -->
+<!--			<condition sql="{m.teacher} = {param.teacher} OR {m.movie_type} = 12">
+				<field table_name="m" field_name="teacher" alias="m.teacher"/>
+				<field table_name="m" field_name="movie_type" alias="m.movie_type"/>
+				<variable alias="param.teacher" default="NULL">
+					<entry type="param" name="teacher" />
+				</variable>
+			</condition>-->
+
+			<!-- Get only standard videos or globals -->
+			<!-- 11: Morceaux; 12: Pédago; -->
+			<!-- Règle: On affiche les morceaux du prof. Pour la pédago on affiche les vidéos de Simon, sauf pour Stéphane, 
+				 pour qui on affiche les siennes. -->
+			<condition 
+				sql="({m.movie_type} = 11 and  {m.teacher} = {teacher}) or ({m.movie_type} = 12 and {m.teacher} = {teacherPedago})">
+				<field table_name="m" field_name="movie_type" alias="m.movie_type"/>
+				<field table_name="m" field_name="teacher" alias="m.teacher"/>
+				<variable alias="teacher" default="0">
+					<entry type="param" name="teacher" />
+				</variable>
+				<variable alias="teacherPedago" default="0">
+					<entry type="param" name="teacher_pedago" />
+				</variable>
+			</condition>
+
+			<order_by sql="{m.level}">
+				<field table_name="m" field_name="level" alias="m.level"/>
+			</order_by>
+<!--			<order_by sql="{m.id_data}">
+				<field table_name="m" field_name="id_data" alias="m.id_data"/>
+			</order_by>-->
+			<order_by sql="{m.position}">
+				<field table_name="m" field_name="position" alias="m.position"/>
+			</order_by>
+
+		</dataquery>
+	</data_structure>
+	<!-- Mise en page -->
+	<layout disabled="false">
+		<box class="col-md-offset-2 col-md-8">
+			<!--<statictext class="h4-like ">Link group/movies</statictext>-->
+			<custom id="videoPlayer-dialog">
+				<option output="html" option_name="widget" value="WidgetVideoPlayerDialog"/>
+				<custom id="videoPlayer">
+					<option output="html" option_name="widget" value="WidgetVideoPlayer"/>
+				</custom>
+			</custom>
+			<form_row>
+				<custom dataset="movie" class="col-xs-12">
+					<option output="html" option_name="widget" value="WidgetSelectMovies"/>
+				</custom>
+			</form_row>
+			<form_row>
+				<box class="col-xs-6">
+					<button action="exit" label="Back">
+						<redirection module="selectmovies" ctrl="group-list" action="get" >
+							<params>
+								<!-- value setted in controller @see _get_get_render method -->
+								<value alias="teacher">0</value>
+							</params>
+						</redirection>
+					</button>
+				</box>
+				<box class="col-xs-6 text-right">
+					<button action="save" label="Save" class="btn-primary" />
+				</box>
+			</form_row>
+		</box>
+	</layout>
+</form>
