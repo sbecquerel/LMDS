@@ -1,0 +1,43 @@
+version: '2'
+volumes:
+  mysql:
+  storage:
+
+services:
+
+  mysql:
+    cpu_shares: 512
+    mem_limit: 512m
+    image: mysql:5.7
+    container_name: lmds-mysql
+    command: --sql-mode="NO_AUTO_CREATE_USER"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql:/var/lib/mysql:rw
+
+  lmds:
+    cpu_shares: 512
+    mem_limit: 512m
+    build: ../../
+    container_name: lmds-app
+    links:
+      - mysql:lmds-mysql
+    depends_on:
+      - mysql
+    environment:
+      APPLICATION_ENV: production
+    ports:
+      - 8080:80
+    environment:
+      - DB_HOST=lmds-mysql
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+      - DB_NAME=lmds
+    volumes:
+      - ../../library:/var/www/app/library
+      - ../../modules:/var/www/app/modules
+      - ../../public/javascript:/var/www/app/public/javascript
+
+
