@@ -38,6 +38,7 @@ services:
     volumes:
       - ../../library:/var/www/app/library
       - ../../modules:/var/www/app/modules
+      - ../../resources:/var/www/app/resources
       - ../../public/javascript:/var/www/app/public/javascript
 
 
