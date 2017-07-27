@@ -28,7 +28,7 @@ services:
     environment:
       APPLICATION_ENV: production
     ports:
-      - 8080:80
+      - 80:80
     environment:
       - DB_HOST=lmds-mysql
       - DB_PORT=3306
@@ -40,5 +40,6 @@ services:
       - ../../modules:/var/www/app/modules
       - ../../resources:/var/www/app/resources
       - ../../public/javascript:/var/www/app/public/javascript
+      - ../../storage:/var/www/storage
 
 
